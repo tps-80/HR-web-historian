@@ -19,7 +19,21 @@ exports.handleRequest = function (req, res) {
     } else if (req.url === "/styles.css" || req.url === "/favicon.ico") {
       res.end()
     } else {
-      archive.isUrlArchived(req.url, res);
+      archive.isUrlArchived(req.url.slice(1), function(exists){
+        if (exists) {
+          fs.readFile(archive.paths.archivedSites + req.url, function(err, html){
+            if (err) {
+              console.log(err);
+            }
+            res.writeHeader(200, {"Content-Type": "text/html"});  
+            res.write(html.toString());  
+            res.end();
+          })
+        } else {
+          res.writeHeader(404, {"Content-Type": "text/html"});  
+          res.end();
+        };
+      })
     }
   } else if (req.method === "POST") {
     var data = '';

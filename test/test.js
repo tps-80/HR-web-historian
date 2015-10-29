@@ -132,6 +132,7 @@ describe("archive helpers", function(){
 
       archive.isUrlArchived("www.example.com", function (exists) {
         expect(exists);
+        console.log(++counter);
         if (++counter == total) { done() }
       });
 

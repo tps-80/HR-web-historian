@@ -61,27 +61,37 @@ exports.addUrlToList = function(url, cb) {
   })
 };
 
-exports.isUrlArchived = function(url, res) {
+exports.isUrlArchived = function(url, cb) {
 // check if the file specified by url exists in the testdata/sites folder
 // if it does, return the html file within the archive
-  var fullPath = exports.paths.archivedSites + url
-  fs.exists(fullPath, function(exists){
+
+  fs.exists(exports.paths.archivedSites + '/' + url, function(exists){
     if (exists) {
-      fs.readFile(fullPath, function(err, html){
-        if (err) {
-          console.log(err);
-        }
-        var content = html.toString();
-        console.log(content);
-        res.writeHeader(200, {"Content-Type": "text/html"});  
-        res.write(content);  
-        res.end();
-      })
-    } else {
-      res.writeHeader(404);
-      res.end()
+      cb(exists)
     }
-  })
+  });
+
+
+
+
+  // var fullPath = exports.paths.archivedSites + url
+  // fs.exists(fullPath, function(exists){
+  //   if (exists) {
+  //     fs.readFile(fullPath, function(err, html){
+  //       if (err) {
+  //         console.log(err);
+  //       }
+  //       var content = html.toString();
+  //       console.log(content);
+  //       res.writeHeader(200, {"Content-Type": "text/html"});  
+  //       res.write(content);  
+  //       res.end();
+  //     })
+  //   } else {
+  //     res.writeHeader(404);
+  //     res.end()
+  //   }
+  // })
 };
 
 exports.downloadUrls = function() {
