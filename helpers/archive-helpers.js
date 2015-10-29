@@ -55,10 +55,10 @@ exports.isUrlInList = function(url, cb) {
 exports.addUrlToList = function(url, cb) {
   exports.isUrlInList(url, function(data){
     if(!data) {
-      fs.appendFile(exports.paths.list, url)
+      fs.appendFile(exports.paths.list, url);
+      cb();
     }          
   })
-  cb();
 };
 
 exports.isUrlArchived = function(url, res) {
