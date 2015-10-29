@@ -27,19 +27,38 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
-
+exports.readListOfUrls = function(cb) {
+  fs.readFile(exports.paths.list, function(err, data){
+    if (err) {
+      console.log(err)
+    }
+    var array = data.toString().split("\n");
+    cb(array);
+  })
 };
 
-exports.isUrlInList = function(url) {
+exports.isUrlInList = function(url, cb) {
   //check if URL already exists inside sites.txt
     //if it exists, go into sites folder and serve up the site
     //if it doesn't exist, add it to sites.txt
-
+    exports.readListOfUrls(function(data){
+      for (var i = 0; i < data.length; i++) {
+        if (data[i] === url) {
+          return cb(true);
+        }
+      };
+      return cb(false);
+    });
+    
 };
 
-exports.addUrlToList = function() {
-
+exports.addUrlToList = function(url, cb) {
+  exports.isUrlInList(url, function(data){
+    if(!data) {
+      fs.appendFile(exports.paths.list, url)
+    }          
+  })
+  cb();
 };
 
 exports.isUrlArchived = function(url, res) {
@@ -63,20 +82,8 @@ exports.isUrlArchived = function(url, res) {
       res.end()
     }
   })
-
-  // fs.readFile(exports.paths.list, function(err, data) {
-  //     if(err) {
-  //       throw err;
-  //     };
-  //     var array = data.toString().split("\n");
-  //     for(i in array) {
-
-  //       if (array[i] === url) {
-
-  //       }
-  //     }
-  // });
 };
 
 exports.downloadUrls = function() {
+
 };
