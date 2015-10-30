@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -67,33 +68,35 @@ exports.isUrlArchived = function(url, cb) {
 
   fs.exists(exports.paths.archivedSites + '/' + url, function(exists){
     if (exists) {
-      cb(exists)
+      cb(exists);
+    } else {
+      cb(exists);
     }
-  });
-
-
-
-
-  // var fullPath = exports.paths.archivedSites + url
-  // fs.exists(fullPath, function(exists){
-  //   if (exists) {
-  //     fs.readFile(fullPath, function(err, html){
-  //       if (err) {
-  //         console.log(err);
-  //       }
-  //       var content = html.toString();
-  //       console.log(content);
-  //       res.writeHeader(200, {"Content-Type": "text/html"});  
-  //       res.write(content);  
-  //       res.end();
-  //     })
-  //   } else {
-  //     res.writeHeader(404);
-  //     res.end()
-  //   }
-  // })
-};
-
-exports.downloadUrls = function() {
+  })
 
 };
+
+exports.downloadUrls = function(urls) {
+  //check list at sites.text,  turn list into an array
+    //loop through array
+      //compare each item in sites.text to the list
+        //if the list item is not in the folder, 
+          //download the html of the site
+
+  var data = "";
+  for (var i=0; i<urls.length; i++) {
+    var site = urls[i];
+    (function(url) {
+      http.get("http://" + url, function(res){
+        res.on("data", function(chunk){
+          data += chunk;
+        });
+        res.on("end",function(){
+          fs.writeFileSync(exports.paths.archivedSites + '/' + url, data);
+        });
+      });
+      
+    })(site);
+  }
+
+};  

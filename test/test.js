@@ -132,7 +132,6 @@ describe("archive helpers", function(){
 
       archive.isUrlArchived("www.example.com", function (exists) {
         expect(exists);
-        console.log(++counter);
         if (++counter == total) { done() }
       });
 
@@ -152,7 +151,7 @@ describe("archive helpers", function(){
       setTimeout(function () {
         expect(fs.readdirSync(archive.paths.archivedSites)).to.deep.equal(urlArray);
         done();
-      }, 25);
+      }, 250);
     });
   });
 });

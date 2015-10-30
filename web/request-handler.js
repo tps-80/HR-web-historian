@@ -1,6 +1,8 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
+var cronFile = require('../workers/htmlfetcher');
+
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
@@ -19,8 +21,8 @@ exports.handleRequest = function (req, res) {
     } else if (req.url === "/styles.css" || req.url === "/favicon.ico") {
       res.end()
     } else {
-      archive.isUrlArchived(req.url.slice(1), function(exists){
-        if (exists) {
+      archive.isUrlArchived(req.url.slice(1), function(exist){
+        if (exist) {
           fs.readFile(archive.paths.archivedSites + req.url, function(err, html){
             if (err) {
               console.log(err);
@@ -30,7 +32,7 @@ exports.handleRequest = function (req, res) {
             res.end();
           })
         } else {
-          res.writeHeader(404, {"Content-Type": "text/html"});  
+          res.writeHeader(404);  
           res.end();
         };
       })
@@ -52,5 +54,6 @@ exports.handleRequest = function (req, res) {
       })
       fs.appendFileSync(archive.paths.list, site);
     });
+    cronFile.cron();
   }
 };
